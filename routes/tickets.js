@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const TicketType = require('./models/TicketType');
+const TicketType = require('../models/ticketType');
 const { authenticateToken, isAdmin } = require('../middlewares/auth');
 
 

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Histórico de Compras</title>
+</head>
+<body>
+    <h1>Seus Ingressos</h1>
+    {{#purchases.length}}
+    <ul>
+        {{#purchases}}
+        <li>
+            Ingresso: {{ticketType.name}} - Quantidade: {{quantity}} - Data: {{purchaseDate}}
+            <a href="/purchases/{{_id}}">Ver detalhes</a>
+        </li>
+        {{/purchases}}
+    </ul>
+    {{/purchases.length}}
+    {{^purchases.length}}
+    <p>Você ainda não realizou compras.</p>
+    {{/purchases.length}}
+</body>
+</html>

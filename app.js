@@ -1,53 +1,57 @@
-// app.js
-const express = require('express');
-const mongoose = require('mongoose');
-const mustacheExpress = require('mustache-express');
-const path = require('path');
+require("dotenv").config(); 
 
-// Importando as rotas
-const authRoutes = require('./routes/auth');
-const ticketRoutes = require('./routes/tickets');
-const purchaseRoutes = require('./routes/purchases');
+const express = require("express");
+const mustacheExpress = require("mustache-express");
+const path = require("path");
+const mongoose = require("mongoose");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-
-const mongoURI = 'mongodb+srv://joaoferreira2001:EVP3xnVFqlWXtZc1@cluster0.mlwej.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
-
-mongoose
-  .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Conectado ao MongoDB'))
-  .catch((err) => console.error('Erro na conexão com MongoDB:', err));
+const engine = mustacheExpress();
+app.engine("mustache", engine);
+app.set("view engine", "mustache");
+app.set("views", path.join(__dirname, "templates"));
 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.engine('mustache', mustacheExpress());
-app.set('view engine', 'mustache');
-app.set('views', path.join(__dirname, 'views'));
 
-app.use(express.static(path.join(__dirname, 'public')));
+const mongoURI = process.env.MONGO_URI;
+mongoose
+  .connect(mongoURI)
+  .then(() => console.log("✅ Conectado ao MongoDB"))
+  .catch((err) => console.error("❌ Erro ao conectar ao MongoDB:", err));
 
-app.use('/api/auth', authRoutes);
-app.use('/api/tickets', ticketRoutes);
-app.use('/api/purchases', purchaseRoutes);
+const authRoutes = require("./routes/auth");
+const ticketRoutes = require("./routes/tickets");
+const purchaseRoutes = require("./routes/purchases");
+
+app.use("/api/auth", authRoutes);
+app.use("/api/tickets", ticketRoutes);
+app.use("/api/purchases", purchaseRoutes);
 
 
-app.get('/login', (req, res) => {
-  res.render('login', { title: 'Login' });
+app.get("/", (req, res) => {
+  res.render("home", { titulo: "Sistema de Ingressos", descricao: "Venda e controle de ingressos de forma fácil!" });
 });
 
 
-app.get('/purchases', (req, res) => {
-  res.render('purchaseHistory', { title: 'Histórico de Compras', purchases: [] });
+app.get("/login", (req, res) => {
+  res.render("login");
 });
 
-app.get('/purchases/:id', (req, res) => {
-  res.render('ticketDetail', { title: 'Detalhe do Ingresso', purchase: {} });
+
+app.get("/purchases", (req, res) => {
+  res.render("purchaseHistory", { purchases: [] });
 });
 
+app.get("/purchases/:id", (req, res) => {
+  res.render("ticketDetail", { ticketType: { name: "VIP" }, quantity: 1, purchaseDate: "2024-02-12" });
+});
+
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });

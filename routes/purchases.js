@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const TicketType = require('./models/TicketType');
-const Purchase = require('./models/Purchase');
+const TicketType = require('../models/ticketType');
+const Purchase = require('../models/purchase');
 const { authenticateToken } = require('../middlewares/auth');
 
 router.post('/', authenticateToken, async (req, res) => {
