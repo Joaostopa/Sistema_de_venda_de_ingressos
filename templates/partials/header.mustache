@@ -1,7 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>{{title}}</title>
+    <meta charset="UTF-8">
+    <title>{{titulo}}</title>
 </head>
 <body>
+    <nav>
+        <a href="/">Home</a>
+        {{#user}}
+            <a href="/purchases">Minhas Compras</a>
+            <a href="/logout">Sair</a>
+        {{/user}}
+        {{^user}}
+            <a href="/login">Login</a>
+        {{/user}}
+    </nav>

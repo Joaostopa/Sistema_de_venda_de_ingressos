@@ -1,11 +1,59 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>{{titulo}}</title>
-</head>
-<body>
-    <h1>{{titulo}}</h1>
-    <p>{{descricao}}</p>
-</body>
-</html>
+{{> partials/header}}
+
+<h1>Ingressos Disponíveis</h1>
+
+<ul>
+  {{#tickets}}
+  <li>
+    <strong>{{name}}</strong> - R$ {{price}} ({{stock}} disponíveis)
+    {{#user}}
+      <form class="purchase-form">
+        <input type="hidden" name="ticketTypeId" value="{{_id}}">
+        <label for="quantity">Quantidade:</label>
+        <input type="number" name="quantity" min="1" max="{{stock}}" required>
+        <button type="submit">Comprar</button>
+      </form>
+    {{/user}}
+  </li>
+  {{/tickets}}
+</ul>
+
+{{^user}}
+  <p><a href="/login">Faça login</a> para comprar ingressos.</p>
+{{/user}}
+
+<script>
+document.querySelectorAll(".purchase-form").forEach(form => {
+    form.addEventListener("submit", async function(event) {
+        event.preventDefault();
+        
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Você precisa estar logado para comprar ingressos.");
+            return;
+        }
+
+        const ticketTypeId = this.querySelector("input[name='ticketTypeId']").value;
+        const quantity = this.querySelector("input[name='quantity']").value;
+
+        const response = await fetch("/api/purchases", {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ items: [{ ticketTypeId, quantity }] })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            alert("Compra realizada com sucesso!");
+            window.location.reload();
+        } else {
+            alert("Erro ao comprar ingresso: " + data.error);
+        }
+    });
+});
+</script>
+
+{{> partials/footer}}

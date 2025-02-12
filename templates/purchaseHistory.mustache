@@ -1,23 +1,35 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Histórico de Compras</title>
-</head>
-<body>
-    <h1>Seus Ingressos</h1>
-    {{#purchases.length}}
-    <ul>
-        {{#purchases}}
-        <li>
-            Ingresso: {{ticketType.name}} - Quantidade: {{quantity}} - Data: {{purchaseDate}}
-            <a href="/purchases/{{_id}}">Ver detalhes</a>
-        </li>
-        {{/purchases}}
-    </ul>
-    {{/purchases.length}}
-    {{^purchases.length}}
-    <p>Você ainda não realizou compras.</p>
-    {{/purchases.length}}
-</body>
-</html>
+{{> partials/header}}
+
+<h1>Histórico de Compras</h1>
+
+<ul id="purchase-list"></ul>
+
+<script>
+document.addEventListener("DOMContentLoaded", async function() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("Você precisa estar logado para ver o histórico de compras.");
+        window.location.href = "/login";
+        return;
+    }
+
+    const response = await fetch("/api/purchases", {
+        headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    const purchases = await response.json();
+
+    const purchaseList = document.getElementById("purchase-list");
+    if (purchases.length > 0) {
+        purchases.forEach(purchase => {
+            const item = document.createElement("li");
+            item.innerHTML = `<strong>${purchase.ticketType.name}</strong> - ${purchase.quantity} ingresso(s) em ${purchase.purchaseDate}`;
+            purchaseList.appendChild(item);
+        });
+    } else {
+        purchaseList.innerHTML = "<p>Você ainda não comprou ingressos.</p>";
+    }
+});
+</script>
+
+{{> partials/footer}}
