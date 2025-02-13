@@ -1,8 +1,14 @@
 {{> partials/header}}
 
-<h1>Histórico de Compras</h1>
+<div class="container">
+    <h1 class="title">🎟️ Histórico de Compras</h1>
 
-<ul id="purchase-list"></ul>
+    <ul id="purchase-list" class="purchase-list"></ul>
+
+    <p id="empty-message" class="empty-message" style="display: none;">Você ainda não comprou ingressos.</p>
+</div>
+
+{{> partials/footer}}
 
 <script>
 document.addEventListener("DOMContentLoaded", async function () {
@@ -35,19 +41,23 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.log("🔹 Compras carregadas:", purchases);
 
         const purchaseList = document.getElementById("purchase-list");
+        const emptyMessage = document.getElementById("empty-message");
         purchaseList.innerHTML = "";
 
         if (purchases.length > 0) {
+            emptyMessage.style.display = "none";
             purchases.forEach(purchase => {
                 const item = document.createElement("li");
+                item.classList.add("purchase-item");
                 item.innerHTML = `
-                    <strong>${purchase.ticketType.name}</strong> - ${purchase.quantity} ingresso(s) - R$${purchase.ticketType.price} 
-                    - Data: ${new Date(purchase.purchaseDate).toLocaleDateString()}
+                    <span class="ticket-name">${purchase.ticketType.name}</span>
+                    <span class="ticket-info">${purchase.quantity} ingresso(s) - R$${purchase.ticketType.price.toFixed(2)}</span>
+                    <span class="purchase-date">📅 ${new Date(purchase.purchaseDate).toLocaleDateString()}</span>
                 `;
                 purchaseList.appendChild(item);
             });
         } else {
-            purchaseList.innerHTML = "<p>Você ainda não comprou ingressos.</p>";
+            emptyMessage.style.display = "block";
         }
     } catch (error) {
         console.error("❌ Erro ao carregar compras:", error);
@@ -56,5 +66,69 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 </script>
 
+<style>
 
-{{> partials/footer}}
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1e1e2f, #3a3a56);
+    color: #fff;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+
+.title {
+    font-size: 26px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+
+.purchase-list {
+    list-style: none;
+    padding: 0;
+}
+
+.purchase-item {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    transition: background 0.3s ease-in-out;
+}
+
+.purchase-item:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+
+.ticket-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ff9800;
+}
+
+.ticket-info {
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.purchase-date {
+    font-size: 12px;
+    color
