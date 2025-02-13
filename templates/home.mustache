@@ -1,17 +1,19 @@
 {{> partials/header}}
 
-<h1>Escolha seus ingressos</h1>
+<div class="container">
+    <h1 class="title">Escolha seus Ingressos</h1>
 
-<ul>
-    {{#tickets}}
-    <li>
-        <p><strong>{{name}}</strong></p>
-        <p>Preço: R$ {{price}}</p>
-        <p>Disponível: {{stock}} ingressos</p>
-        <button class="buy-btn" data-ticket-id="{{_id}}">Comprar</button>
-    </li>
-    {{/tickets}}
-</ul>
+    <ul class="ticket-list">
+        {{#tickets}}
+        <li class="ticket-card">
+            <p class="ticket-name"><strong>{{name}}</strong></p>
+            <p class="ticket-price">💰 Preço: R$ {{price}}</p>
+            <p class="ticket-stock">📦 Disponíveis: {{stock}} ingressos</p>
+            <button class="buy-btn" data-ticket-id="{{_id}}">Comprar</button>
+        </li>
+        {{/tickets}}
+    </ul>
+</div>
 
 {{> partials/footer}}
 
@@ -24,7 +26,7 @@ document.querySelectorAll('.buy-btn').forEach(button => {
         const token = localStorage.getItem("token");
 
         if (!token) {
-            alert("Você precisa estar logado para comprar ingressos.");
+            alert("⚠️ Você precisa estar logado para comprar ingressos.");
             window.location.href = "/login";
             return;
         }
@@ -41,8 +43,86 @@ document.querySelectorAll('.buy-btn').forEach(button => {
             window.location.href = `/buy/${ticketId}`;
         } else {
             const errorData = await response.json();
-            alert("Erro ao acessar a página de compra: " + errorData.error);
+            alert("❌ Erro ao acessar a página de compra: " + errorData.error);
         }
     });
 });
 </script>
+
+<style>
+/* Estilos globais */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1e1e2f, #3a3a56);
+    color: #fff;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container principal */
+.container {
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+}
+
+/* Título */
+.title {
+    font-size: 28px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Lista de ingressos */
+.ticket-list {
+    list-style: none;
+    padding: 0;
+}
+
+/* Cartão de ingresso */
+.ticket-card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 15px;
+    text-align: center;
+    transition: transform 0.2s ease-in-out;
+}
+
+.ticket-card:hover {
+    transform: scale(1.03);
+}
+
+/* Nome do ingresso */
+.ticket-name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Informações do ingresso */
+.ticket-price, .ticket-stock {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+/* Botão Comprar */
+.buy-btn {
+    background: #ff9800;
+    border: none;
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.buy-btn:hover {
+    background: #e68900;
+}
+</style>

@@ -1,21 +1,27 @@
 {{> partials/header}}
 
-<h1>Comprar Ingresso</h1>
+<div class="container">
+    <div class="card">
+        <h1 class="title">Comprar Ingresso</h1>
 
-<p><strong>Ingresso:</strong> {{ticket.name}}</p>
-<p><strong>Preço:</strong> R$ {{ticket.price}}</p>
-<p><strong>Disponíveis:</strong> {{ticket.stock}}</p>
+        <div class="ticket-info">
+            <p><strong>🎟 Ingresso:</strong> {{ticket.name}}</p>
+            <p><strong>💰 Preço:</strong> R$ {{ticket.price}}</p>
+            <p><strong>📦 Disponíveis:</strong> {{ticket.stock}}</p>
+        </div>
 
-<form id="purchase-form">
-  <input type="hidden" name="ticketTypeId" value="{{ticket._id}}">
+        <form id="purchase-form">
+            <input type="hidden" name="ticketTypeId" value="{{ticket._id}}">
 
-  <div class="form-group">
-    <label for="quantity">Quantidade:</label>
-    <input type="number" id="quantity" name="quantity" min="1" max="{{ticket.stock}}" required>
-  </div>
+            <div class="form-group">
+                <label for="quantity">Quantidade:</label>
+                <input type="number" id="quantity" name="quantity" min="1" max="{{ticket.stock}}" required>
+            </div>
 
-  <button type="submit">Comprar</button>
-</form>
+            <button type="submit" class="btn">Comprar</button>
+        </form>
+    </div>
+</div>
 
 <script>
 document.getElementById("purchase-form").addEventListener("submit", async function(event) {
@@ -23,7 +29,7 @@ document.getElementById("purchase-form").addEventListener("submit", async functi
 
     const token = localStorage.getItem("token");
     if (!token) {
-        alert("Você precisa estar logado para comprar ingressos.");
+        alert("⚠️ Você precisa estar logado para comprar ingressos.");
         window.location.href = "/login";
         return;
     }
@@ -44,12 +50,96 @@ document.getElementById("purchase-form").addEventListener("submit", async functi
 
     const data = await response.json();
     if (response.ok) {
-        alert("Compra realizada com sucesso!");
+        alert("✅ Compra realizada com sucesso!");
         window.location.href = "/purchases";
     } else {
-        alert("Erro ao comprar ingresso: " + data.error);
+        alert("❌ Erro ao comprar ingresso: " + data.error);
     }
 });
 </script>
+
+<style>
+/* Estilos globais */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1e1e2f, #3a3a56);
+    color: #fff;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container centralizado */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Card estilizado */
+.card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    width: 350px;
+    text-align: center;
+}
+
+/* Título estilizado */
+.title {
+    font-size: 24px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+/* Informações do ingresso */
+.ticket-info p {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+/* Input estilizado */
+.form-group {
+    margin-top: 15px;
+    text-align: left;
+}
+
+label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 5px;
+}
+
+/* Botão estilizado */
+.btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    background: #ff9800;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #e68900;
+}
+
+</style>
 
 {{> partials/footer}}

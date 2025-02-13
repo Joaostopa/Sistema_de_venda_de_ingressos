@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         return;
     }
 
-    console.log("🔹 Enviando requisição com token:", token);
+    console.log("🔹 Token enviado na requisição:", token);
 
     try {
         const response = await fetch("/api/purchases", {
@@ -41,7 +41,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             purchases.forEach(purchase => {
                 const item = document.createElement("li");
                 item.innerHTML = `
-                    <strong>${purchase.ticketType.name}</strong> - ${purchase.quantity} ingresso(s) - ${new Date(purchase.purchaseDate).toLocaleDateString("pt-BR")}
+                    <strong>${purchase.ticketType.name}</strong> - ${purchase.quantity} ingresso(s) - R$${purchase.ticketType.price} 
+                    - Data: ${new Date(purchase.purchaseDate).toLocaleDateString()}
                 `;
                 purchaseList.appendChild(item);
             });
@@ -54,5 +55,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 });
 </script>
+
 
 {{> partials/footer}}

@@ -1,23 +1,27 @@
 {{> partials/header}}
 
-<h1>Login</h1>
+<div class="container">
+    <h1 class="title">Faça Login</h1>
 
-<form id="login-form">
-  <label for="email">E-mail:</label>
-  <input type="email" name="email" id="email" required>
-  <br>
+    <form id="login-form" class="form">
+        <div class="form-group">
+            <label for="email">📧 E-mail:</label>
+            <input type="email" name="email" id="email" required>
+        </div>
 
-  <label for="password">Senha:</label>
-  <input type="password" name="password" id="password" required>
-  <br>
+        <div class="form-group">
+            <label for="password">🔒 Senha:</label>
+            <input type="password" name="password" id="password" required>
+        </div>
 
-  <button type="submit">Entrar</button>
-</form>
+        <button type="submit" class="btn">Entrar</button>
+    </form>
 
-<p>Ainda não tem uma conta?</p>
-<a href="/register">
-  <button>Cadastre-se</button>
-</a>
+    <p class="register-text">Ainda não tem uma conta?</p>
+    <a href="/register" class="register-btn">Cadastre-se</a>
+</div>
+
+{{> partials/footer}}
 
 <script>
 document.getElementById("login-form").addEventListener("submit", async function(event) {
@@ -38,9 +42,105 @@ document.getElementById("login-form").addEventListener("submit", async function(
         localStorage.setItem("token", data.token);
         window.location.href = "/";
     } else {
-        alert("Erro ao fazer login!");
+        alert("❌ Erro ao fazer login! Verifique suas credenciais.");
     }
 });
 </script>
 
-{{> partials/footer}}
+<style>
+/* Estilos globais */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1e1e2f, #3a3a56);
+    color: #fff;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container principal */
+.container {
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Título */
+.title {
+    font-size: 28px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Formulário */
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Campos do formulário */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+}
+
+/* Botão de login */
+.btn {
+    background: #ff9800;
+    border: none;
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.btn:hover {
+    background: #e68900;
+}
+
+/* Texto e botão de cadastro */
+.register-text {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.register-btn {
+    display: inline-block;
+    background: #4caf50;
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+    transition: background 0.3s ease-in-out;
+}
+
+.register-btn:hover {
+    background: #388e3c;
+}
+</sty
