@@ -3,23 +3,26 @@
 <h1>Login</h1>
 
 <form id="login-form">
-  <div class="form-group">
-    <label for="email">E-mail:</label>
-    <input type="email" name="email" id="email" required>
-  </div>
+  <label for="email">E-mail:</label>
+  <input type="email" name="email" id="email" required>
+  <br>
 
-  <div class="form-group">
-    <label for="password">Senha:</label>
-    <input type="password" name="password" id="password" required>
-  </div>
+  <label for="password">Senha:</label>
+  <input type="password" name="password" id="password" required>
+  <br>
 
   <button type="submit">Entrar</button>
 </form>
 
+<p>Ainda não tem uma conta?</p>
+<a href="/register">
+  <button>Cadastre-se</button>
+</a>
+
 <script>
 document.getElementById("login-form").addEventListener("submit", async function(event) {
     event.preventDefault();
-    
+
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
@@ -30,10 +33,10 @@ document.getElementById("login-form").addEventListener("submit", async function(
     });
 
     const data = await response.json();
-    
+
     if (data.token) {
-        localStorage.setItem("token", data.token); // Armazena o token no localStorage
-        window.location.href = "/"; // Redireciona para a página de ingressos
+        localStorage.setItem("token", data.token);
+        window.location.href = "/";
     } else {
         alert("Erro ao fazer login!");
     }

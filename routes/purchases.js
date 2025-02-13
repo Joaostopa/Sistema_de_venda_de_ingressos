@@ -8,11 +8,10 @@ const { authenticateToken } = require('../middlewares/auth');
 router.post('/', authenticateToken, async (req, res) => {
   try {
     const { items } = req.body;
-    const user = req.user.id; 
+    const user = req.user.id;
 
-    console.log("Usuário autenticado:", user);  
+    console.log("🔹 Usuário autenticado para compra:", user);
 
-   
     for (const item of items) {
       const ticket = await TicketType.findById(item.ticketTypeId);
       if (!ticket) {
@@ -23,11 +22,10 @@ router.post('/', authenticateToken, async (req, res) => {
         return res.status(400).json({ error: `Estoque insuficiente para ${ticket.name}` });
       }
 
-    
       ticket.stock -= item.quantity;
       await ticket.save();
 
-        const purchase = new Purchase({
+      const purchase = new Purchase({
         user,
         ticketType: item.ticketTypeId,
         quantity: item.quantity
@@ -37,16 +35,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
     res.status(201).json({ message: "Compra realizada com sucesso!" });
   } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-
-router.get('/', authenticateToken, async (req, res) => {
-  try {
-    const purchases = await Purchase.find({ user: req.user.id }).populate('ticketType');
-    res.json(purchases);
-  } catch (err) {
+    console.error("❌ Erro na compra:", err);
     res.status(500).json({ error: err.message });
   }
 });

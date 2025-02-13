@@ -53,16 +53,18 @@ app.get("/purchases", authenticateToken, async (req, res) => {
   }
 });
 
-app.get("/buy/:id", authenticateToken, async (req, res) => {
+app.get("/buy/:id", async (req, res) => {
   try {
     const ticket = await TicketType.findById(req.params.id);
-    if (!ticket) return res.status(404).send("Ingresso não encontrado");
+    if (!ticket) return res.status(404).json({ error: "Ingresso não encontrado" });
+
     res.render("buy", { ticket });
   } catch (err) {
     console.error("Erro ao carregar ingresso:", err);
-    res.status(500).send("Erro ao carregar ingresso");
+    res.status(500).json({ error: "Erro ao carregar ingresso" });
   }
 });
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));

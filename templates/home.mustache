@@ -8,7 +8,7 @@
         <p><strong>{{name}}</strong></p>
         <p>Preço: R$ {{price}}</p>
         <p>Disponível: {{stock}} ingressos</p>
-        <a href="#" class="buy-link" data-ticket-id="{{_id}}">Comprar</a>
+        <button class="buy-btn" data-ticket-id="{{_id}}">Comprar</button>
     </li>
     {{/tickets}}
 </ul>
@@ -16,32 +16,32 @@
 {{> partials/footer}}
 
 <script>
-document.querySelectorAll('.buy-link').forEach(link => {
-    link.addEventListener('click', async function(event) {
+document.querySelectorAll('.buy-btn').forEach(button => {
+    button.addEventListener('click', async function(event) {
         event.preventDefault();
 
-       
         const ticketId = this.getAttribute('data-ticket-id');
-        const token = localStorage.getItem("token");  
+        const token = localStorage.getItem("token");
 
         if (!token) {
             alert("Você precisa estar logado para comprar ingressos.");
+            window.location.href = "/login";
             return;
         }
 
-     
-        const response = await fetch(`/api/buy/${ticketId}`, {
+        // Enviar requisição GET com token no cabeçalho Authorization
+        const response = await fetch(`/buy/${ticketId}`, {
             method: "GET",
             headers: {
-                "Authorization": `Bearer ${token}`  
+                "Authorization": `Bearer ${token}`
             }
         });
 
-        const data = await response.json();
         if (response.ok) {
-            window.location.href = `/buy/${ticketId}`;  
+            window.location.href = `/buy/${ticketId}`;
         } else {
-            alert("Erro ao acessar a página de compra: " + data.error);
+            const errorData = await response.json();
+            alert("Erro ao acessar a página de compra: " + errorData.error);
         }
     });
 });
