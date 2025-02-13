@@ -7,30 +7,50 @@
 <script>
 document.addEventListener("DOMContentLoaded", async function () {
     const token = localStorage.getItem("token");
+
     if (!token) {
         alert("Você precisa estar logado para ver o histórico de compras.");
         window.location.href = "/login";
         return;
     }
 
-    const response = await fetch("/api/purchases", {
-        headers: { "Authorization": `Bearer ${token}` }
-    });
+    console.log("🔹 Enviando requisição com token:", token);
 
-    const purchases = await response.json();
-
-    const purchaseList = document.getElementById("purchase-list");
-    if (purchases.length > 0) {
-        purchases.forEach(purchase => {
-            const item = document.createElement("li");
-            item.innerHTML = `
-                <strong>${purchase.ticketType.name}</strong> - ${purchase.quantity} ingresso(s) - ${purchase.purchaseDate}
-                <a href="/purchases/${purchase._id}">Ver detalhes</a>
-            `;
-            purchaseList.appendChild(item);
+    try {
+        const response = await fetch("/api/purchases", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
         });
-    } else {
-        purchaseList.innerHTML = "<p>Você ainda não comprou ingressos.</p>";
+
+        console.log("🔹 Status da resposta:", response.status);
+
+        if (!response.ok) {
+            throw new Error(`Erro ao carregar histórico de compras. Código: ${response.status}`);
+        }
+
+        const purchases = await response.json();
+        console.log("🔹 Compras carregadas:", purchases);
+
+        const purchaseList = document.getElementById("purchase-list");
+        purchaseList.innerHTML = "";
+
+        if (purchases.length > 0) {
+            purchases.forEach(purchase => {
+                const item = document.createElement("li");
+                item.innerHTML = `
+                    <strong>${purchase.ticketType.name}</strong> - ${purchase.quantity} ingresso(s) - ${new Date(purchase.purchaseDate).toLocaleDateString("pt-BR")}
+                `;
+                purchaseList.appendChild(item);
+            });
+        } else {
+            purchaseList.innerHTML = "<p>Você ainda não comprou ingressos.</p>";
+        }
+    } catch (error) {
+        console.error("❌ Erro ao carregar compras:", error);
+        alert("Erro ao carregar histórico de compras.");
     }
 });
 </script>
