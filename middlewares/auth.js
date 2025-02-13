@@ -5,7 +5,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1]; 
+  const token = authHeader && authHeader.split(" ")[1];
 
   console.log("Token recebido:", token);  
 
@@ -18,18 +18,6 @@ function authenticateToken(req, res, next) {
     next(); 
   });
 }
-
-app.get("/buy/:id", authenticateToken, async (req, res) => {
-  try {
-    const ticket = await TicketType.findById(req.params.id);
-    if (!ticket) return res.status(404).send("Ingresso não encontrado");
-    res.render("buy", { ticket });
-  } catch (err) {
-    console.error("Erro ao carregar ingresso:", err);
-    res.status(500).send("Erro ao carregar ingresso");
-  }
-});
-
 
 
 function isAdmin(req, res, next) {
