@@ -1,11 +1,12 @@
-{{> header}}
+{{> partials/header}}
 
-<h1>Detalhes da Compra</h1>
-<p>Ingresso: {{ticketType.name}}</p>
-<p>Preço: R$ {{ticketType.price}}</p>
-<p>Quantidade: {{quantity}}</p>
-<p>Data da Compra: {{purchaseDate}}</p>
+<h1>Detalhes do Ingresso</h1>
 
-<a href="/purchases">Voltar ao histórico</a>
+<p><strong>Ingresso:</strong> {{ticketType.name}}</p>
+<p><strong>Preço:</strong> R$ {{ticketType.price}}</p>
+<p><strong>Quantidade:</strong> {{quantity}}</p>
+<p><strong>Data da Compra:</strong> {{purchaseDate}}</p>
 
-{{> footer}}
+<a href="/purchases">Voltar</a>
+
+{{> partials/footer}}

@@ -3,7 +3,6 @@ const router = express.Router();
 const TicketType = require('../models/ticketType');
 const { authenticateToken, isAdmin } = require('../middlewares/auth');
 
-
 router.post('/', authenticateToken, isAdmin, async (req, res) => {
   try {
     const { name, price, stock } = req.body;
@@ -24,7 +23,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-
 router.get('/:id', async (req, res) => {
   try {
     const ticket = await TicketType.findById(req.params.id);
@@ -34,7 +32,6 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 
 router.put('/:id', authenticateToken, isAdmin, async (req, res) => {
   try {
@@ -50,7 +47,6 @@ router.put('/:id', authenticateToken, isAdmin, async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
-
 
 router.delete('/:id', authenticateToken, isAdmin, async (req, res) => {
   try {

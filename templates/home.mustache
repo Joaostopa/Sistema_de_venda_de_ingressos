@@ -1,59 +1,48 @@
 {{> partials/header}}
 
-<h1>Ingressos Disponíveis</h1>
+<h1>Escolha seus ingressos</h1>
 
 <ul>
-  {{#tickets}}
-  <li>
-    <strong>{{name}}</strong> - R$ {{price}} ({{stock}} disponíveis)
-    {{#user}}
-      <form class="purchase-form">
-        <input type="hidden" name="ticketTypeId" value="{{_id}}">
-        <label for="quantity">Quantidade:</label>
-        <input type="number" name="quantity" min="1" max="{{stock}}" required>
-        <button type="submit">Comprar</button>
-      </form>
-    {{/user}}
-  </li>
-  {{/tickets}}
+    {{#tickets}}
+    <li>
+        <p><strong>{{name}}</strong></p>
+        <p>Preço: R$ {{price}}</p>
+        <p>Disponível: {{stock}} ingressos</p>
+        <a href="#" class="buy-link" data-ticket-id="{{_id}}">Comprar</a>
+    </li>
+    {{/tickets}}
 </ul>
 
-{{^user}}
-  <p><a href="/login">Faça login</a> para comprar ingressos.</p>
-{{/user}}
+{{> partials/footer}}
 
 <script>
-document.querySelectorAll(".purchase-form").forEach(form => {
-    form.addEventListener("submit", async function(event) {
+document.querySelectorAll('.buy-link').forEach(link => {
+    link.addEventListener('click', async function(event) {
         event.preventDefault();
-        
-        const token = localStorage.getItem("token");
+
+       
+        const ticketId = this.getAttribute('data-ticket-id');
+        const token = localStorage.getItem("token");  
+
         if (!token) {
             alert("Você precisa estar logado para comprar ingressos.");
             return;
         }
 
-        const ticketTypeId = this.querySelector("input[name='ticketTypeId']").value;
-        const quantity = this.querySelector("input[name='quantity']").value;
-
-        const response = await fetch("/api/purchases", {
-            method: "POST",
-            headers: { 
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify({ items: [{ ticketTypeId, quantity }] })
+     
+        const response = await fetch(`/api/buy/${ticketId}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`  
+            }
         });
 
         const data = await response.json();
         if (response.ok) {
-            alert("Compra realizada com sucesso!");
-            window.location.reload();
+            window.location.href = `/buy/${ticketId}`;  
         } else {
-            alert("Erro ao comprar ingresso: " + data.error);
+            alert("Erro ao acessar a página de compra: " + data.error);
         }
     });
 });
 </script>
-
-{{> partials/footer}}

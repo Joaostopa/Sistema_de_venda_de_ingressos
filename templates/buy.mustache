@@ -1,0 +1,53 @@
+{{> partials/header}}
+
+<h1>Comprar Ingresso</h1>
+
+<p><strong>Ingresso:</strong> {{ticket.name}}</p>
+<p><strong>Preço:</strong> R$ {{ticket.price}}</p>
+<p><strong>Disponíveis:</strong> {{ticket.stock}}</p>
+
+<form id="purchase-form">
+  <input type="hidden" name="ticketTypeId" value="{{ticket._id}}">
+  
+  <div class="form-group">
+    <label for="quantity">Quantidade:</label>
+    <input type="number" id="quantity" name="quantity" min="1" max="{{ticket.stock}}" required>
+  </div>
+  
+  <button type="submit">Comprar</button>
+</form>
+
+<script>
+document.getElementById("purchase-form").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const token = localStorage.getItem("token");  
+    if (!token) {
+        alert("Você precisa estar logado para comprar ingressos.");
+        return;
+    }
+
+    const ticketTypeId = document.querySelector("input[name='ticketTypeId']").value;
+    const quantity = document.getElementById("quantity").value;
+
+    const response = await fetch("/api/purchases", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`  
+        },
+        body: JSON.stringify({ items: [{ ticketTypeId, quantity }] })
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+        alert("Compra realizada com sucesso!");
+        window.location.href = "/purchases";  
+    } else {
+        alert("Erro ao comprar ingresso: " + data.error);
+    }
+});
+
+</script>
+
+{{> partials/footer}}

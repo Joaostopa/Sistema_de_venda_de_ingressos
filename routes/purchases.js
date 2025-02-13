@@ -1,39 +1,53 @@
 const express = require('express');
 const router = express.Router();
-const TicketType = require('../models/ticketType');
 const Purchase = require('../models/purchase');
+const TicketType = require('../models/ticketType');
 const { authenticateToken } = require('../middlewares/auth');
 
+
 router.post('/', authenticateToken, async (req, res) => {
-
-  const { items } = req.body;
-  if (!items || !Array.isArray(items) || items.length === 0) {
-    return res.status(400).json({ error: 'Nenhum item informado' });
-  }
-
   try {
+    const { items } = req.body;
+    const user = req.user.id; 
+
+    console.log("Usuário autenticado:", user);  
+
+   
     for (const item of items) {
       const ticket = await TicketType.findById(item.ticketTypeId);
-      if (!ticket)
-        return res.status(404).json({ error: 'Tipo de ingresso não encontrado' });
-      if (ticket.stock < item.quantity)
-        return res.status(400).json({ error: `Estoque insuficiente para o ingresso: ${ticket.name}` });
+      if (!ticket) {
+        return res.status(404).json({ error: "Ingresso não encontrado" });
+      }
 
+      if (ticket.stock < item.quantity) {
+        return res.status(400).json({ error: `Estoque insuficiente para ${ticket.name}` });
+      }
 
+    
       ticket.stock -= item.quantity;
       await ticket.save();
 
-
-      const purchase = new Purchase({
-        user: req.user.id,
-        ticketType: ticket._id,
-        quantity: item.quantity,
+        const purchase = new Purchase({
+        user,
+        ticketType: item.ticketTypeId,
+        quantity: item.quantity
       });
       await purchase.save();
     }
-    res.json({ message: 'Compra realizada com sucesso' });
+
+    res.status(201).json({ message: "Compra realizada com sucesso!" });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+router.get('/', authenticateToken, async (req, res) => {
+  try {
+    const purchases = await Purchase.find({ user: req.user.id }).populate('ticketType');
+    res.json(purchases);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

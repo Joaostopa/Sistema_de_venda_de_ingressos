@@ -5,7 +5,7 @@
 <ul id="purchase-list"></ul>
 
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
+document.addEventListener("DOMContentLoaded", async function () {
     const token = localStorage.getItem("token");
     if (!token) {
         alert("Você precisa estar logado para ver o histórico de compras.");
@@ -23,7 +23,10 @@ document.addEventListener("DOMContentLoaded", async function() {
     if (purchases.length > 0) {
         purchases.forEach(purchase => {
             const item = document.createElement("li");
-            item.innerHTML = `<strong>${purchase.ticketType.name}</strong> - ${purchase.quantity} ingresso(s) em ${purchase.purchaseDate}`;
+            item.innerHTML = `
+                <strong>${purchase.ticketType.name}</strong> - ${purchase.quantity} ingresso(s) - ${purchase.purchaseDate}
+                <a href="/purchases/${purchase._id}">Ver detalhes</a>
+            `;
             purchaseList.appendChild(item);
         });
     } else {

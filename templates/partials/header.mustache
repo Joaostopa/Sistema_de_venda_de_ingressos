@@ -1,17 +1,17 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>{{titulo}}</title>
-</head>
-<body>
-    <nav>
-        <a href="/">Home</a>
-        {{#user}}
-            <a href="/purchases">Minhas Compras</a>
-            <a href="/logout">Sair</a>
-        {{/user}}
-        {{^user}}
-            <a href="/login">Login</a>
-        {{/user}}
-    </nav>
+<nav>
+    <a href="/">Home</a>
+    {{#user}}
+        <a href="/purchases">Minhas Compras</a>
+        <a href="/logout" id="logout-btn">Sair</a>
+    {{/user}}
+    {{^user}}
+        <a href="/login">Login</a>
+    {{/user}}
+</nav>
+
+<script>
+document.getElementById("logout-btn")?.addEventListener("click", function() {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+});
+</script>
