@@ -44,6 +44,7 @@ app.get("/", async (req, res) => {
 app.get("/register", (req, res) => res.render("register"));
 app.get("/login", (req, res) => res.render("login"));
 
+
 app.get("/purchases", authenticateToken, async (req, res) => {
   try {
     res.render("purchaseHistory");

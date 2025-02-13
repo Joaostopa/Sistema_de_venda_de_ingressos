@@ -3,36 +3,27 @@ require("dotenv").config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
+
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
-  if (!authHeader) {
-    console.log("❌ Nenhum cabeçalho de autorização encontrado");
-    return res.status(401).json({ error: "Token não informado" });
-  }
+  console.log("🔹 Token recebido:", token);
 
-  const token = authHeader.split(" ")[1];
-
-  if (!token) {
-    console.log("❌ Token vazio no cabeçalho");
-    return res.status(401).json({ error: "Token não informado" });
-  }
+  if (!token) return res.status(401).json({ error: "Token não informado" });
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) {
-      console.log("❌ Token inválido:", err.message);
-      return res.status(403).json({ error: "Token inválido" });
-    }
+    if (err) return res.status(403).json({ error: "Token inválido" });
 
     req.user = user;
-    console.log("✅ Usuário autenticado com sucesso:", req.user);
     next();
   });
 }
 
+
 function isAdmin(req, res, next) {
   if (!req.user || req.user.role !== "admin") {
-    return res.status(403).json({ error: "Acesso negado. Apenas administradores podem realizar essa ação." });
+    return res.status(403).json({ error: "Apenas administradores podem executar essa ação." });
   }
   next();
 }
